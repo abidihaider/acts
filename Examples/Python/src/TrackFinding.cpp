@@ -308,7 +308,7 @@ void addTrackFinding(Context& ctx) {
       ActsExamples::AmbiguityResolutionAlgorithm, mex,
       "AmbiguityResolutionAlgorithm", inputSourceLinks, inputTrajectories,
       inputTrackParameters, inputTrackParametersTips, outputTrackParameters,
-      outputTrackParametersTips, maximumSharedHits);
+      outputTrackParametersTips,outputTrajectories, maximumSharedHits);
 }
 
 }  // namespace Acts::Python

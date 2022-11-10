@@ -44,6 +44,11 @@ ActsExamples::AmbiguityResolutionAlgorithm::AmbiguityResolutionAlgorithm(
     throw std::invalid_argument(
         "Missing track parameters tips output collection");
   }
+  if (m_cfg.outputTrajectories.empty()) {
+    throw std::invalid_argument(
+        "Missing track trajectories output collection");
+  }
+  
 }
 
 namespace {
@@ -181,16 +186,24 @@ ActsExamples::ProcessCode ActsExamples::AmbiguityResolutionAlgorithm::execute(
 
   TrackParametersContainer outputTrackParameters;
   std::vector<std::pair<size_t, size_t>> outputTrackParametersTips;
+  TrajectoriesContainer outputTrajectoriesContainer;
   outputTrackParameters.reserve(trackIndices.size());
   outputTrackParametersTips.reserve(trackIndices.size());
+  outputTrajectoriesContainer.reserve(trackIndices.size());
   for (auto indexTrack : trackIndices) {
     outputTrackParameters.push_back(trackParameters[indexTrack]);
     outputTrackParametersTips.push_back(trackTips[indexTrack]);
+    const auto [indexTraj, tip] = trackTips[indexTrack];
+    outputTrajectoriesContainer.push_back(trajectories[indexTraj]);
   }
 
   ctx.eventStore.add(m_cfg.outputTrackParameters,
                      std::move(outputTrackParameters));
   ctx.eventStore.add(m_cfg.outputTrackParametersTips,
                      std::move(outputTrackParametersTips));
+  ctx.eventStore.add(m_cfg.outputTrajectories,
+                     std::move(outputTrajectoriesContainer));
+
+
   return ActsExamples::ProcessCode::SUCCESS;
 }

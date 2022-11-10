@@ -994,6 +994,7 @@ def addAmbiguityResolution(
         inputTrackParametersTips="trackParametersTips",
         outputTrackParameters="filteredTrackParameters",
         outputTrackParametersTips="filteredTrackParametersTips",
+        outputTrajectories="filteredTrajectories",
         **acts.examples.defaultKWArgs(
             maximumSharedHits=config.maximumSharedHits,
         ),
@@ -1007,6 +1008,24 @@ def addAmbiguityResolution(
         outputDirRoot = Path(outputDirRoot)
         if not outputDirRoot.exists():
             outputDirRoot.mkdir()
+
+        # write track summary from CKF
+        trackSummaryWriter = acts.examples.RootTrajectorySummaryWriter(
+            level=customLogLevel(),
+            inputTrajectories=alg.config.outputTrajectories,
+            # @note The full particles collection is used here to avoid lots of warnings
+            # since the unselected CKF track might have a majority particle not in the
+            # filtered particle collection. This could be avoided when a seperate track
+            # selection algorithm is used.
+            inputSimHits="simhits",
+            inputMeasurementSimHitsMap="measurement_simhits_map",
+            inputParticles="particles_selected",
+            inputMeasurementParticlesMap="measurement_particles_map",
+            filePath=str(outputDirRoot / "tracksummary_ambiguity.root"),
+            treeName="tracksummary",
+        )
+        s.addWriter(trackSummaryWriter)
+
 
         perfWriter = acts.examples.CKFPerformanceWriter(
             level=customLogLevel(),
