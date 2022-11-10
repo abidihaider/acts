@@ -249,9 +249,9 @@ void addOutput(Context& ctx) {
       filePath, treeName, fileMode);
 
   ACTS_PYTHON_DECLARE_WRITER(ActsExamples::RootTrajectorySummaryWriter, mex,
-                             "RootTrajectorySummaryWriter", inputTrajectories,
-                             inputParticles, inputMeasurementParticlesMap,
-                             filePath, treeName, fileMode);
+                             "RootTrajectorySummaryWriter", inputTrajectories, inputParticles,
+      inputSimHits, inputMeasurementParticlesMap, inputMeasurementSimHitsMap,
+      filePath, treeName, fileMode);
 
   ACTS_PYTHON_DECLARE_WRITER(
       ActsExamples::RootVertexPerformanceWriter, mex,

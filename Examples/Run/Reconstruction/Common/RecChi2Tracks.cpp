@@ -189,6 +189,9 @@ int runRecChi2Tracks(int argc, char* argv[],
   trackSummaryWriter.inputParticles = inputParticles;
   trackSummaryWriter.inputMeasurementParticlesMap =
       digiCfg.outputMeasurementParticlesMap;
+  trackSummaryWriter.inputSimHits = simHitReaderCfg.outputSimHits;
+  trackSummaryWriter.inputMeasurementSimHitsMap =
+      digiCfg.outputMeasurementSimHitsMap;
   trackSummaryWriter.filePath = outputDir + "/tracksummary_fitter.root";
   sequencer.addWriter(std::make_shared<RootTrajectorySummaryWriter>(
       trackSummaryWriter, logLevel));

@@ -271,7 +271,7 @@ int runRecCKFTracks(int argc, char* argv[],
       trackingGeometry, magneticField);
   sequencer.addAlgorithm(
       std::make_shared<TrackFindingAlgorithm>(trackFindingCfg, logLevel));
-
+      
   // write track states from CKF
   RootTrajectoryStatesWriter::Config trackStatesWriter;
   trackStatesWriter.inputTrajectories = trackFindingCfg.outputTrajectories;
@@ -281,12 +281,12 @@ int runRecCKFTracks(int argc, char* argv[],
   // selection algorithm is used.
   trackStatesWriter.inputParticles = particleReader.outputParticles;
   trackStatesWriter.inputSimHits = simHitReaderCfg.outputSimHits;
-  trackStatesWriter.inputMeasurementParticlesMap =
-      digiCfg.outputMeasurementParticlesMap;
-  trackStatesWriter.inputMeasurementSimHitsMap =
-      digiCfg.outputMeasurementSimHitsMap;
+  trackStatesWriter.inputMeasurementParticlesMap = digiCfg.outputMeasurementParticlesMap;
+  trackStatesWriter.inputMeasurementSimHitsMap = digiCfg.outputMeasurementSimHitsMap;
   trackStatesWriter.filePath = outputDir + "/trackstates_ckf.root";
   trackStatesWriter.treeName = "trackstates";
+
+
   sequencer.addWriter(std::make_shared<RootTrajectoryStatesWriter>(
       trackStatesWriter, logLevel));
 
@@ -298,8 +298,9 @@ int runRecCKFTracks(int argc, char* argv[],
   // filtered particle collection. This could be avoided when a seperate track
   // selection algorithm is used.
   trackSummaryWriter.inputParticles = particleReader.outputParticles;
-  trackSummaryWriter.inputMeasurementParticlesMap =
-      digiCfg.outputMeasurementParticlesMap;
+  trackSummaryWriter.inputMeasurementParticlesMap = digiCfg.outputMeasurementParticlesMap;
+  trackSummaryWriter.inputMeasurementSimHitsMap = digiCfg.outputMeasurementSimHitsMap;  
+  trackSummaryWriter.inputSimHits = simHitReaderCfg.outputSimHits;
   trackSummaryWriter.filePath = outputDir + "/tracksummary_ckf.root";
   trackSummaryWriter.treeName = "tracksummary";
   sequencer.addWriter(std::make_shared<RootTrajectorySummaryWriter>(

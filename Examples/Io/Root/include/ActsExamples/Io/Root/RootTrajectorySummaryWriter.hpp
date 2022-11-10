@@ -44,8 +44,12 @@ class RootTrajectorySummaryWriter final
     std::string inputTrajectories;
     /// Input particles collection.
     std::string inputParticles;
+    /// Input collection of simulated hits.
+    std::string inputSimHits;
     /// Input hit-particles map collection.
     std::string inputMeasurementParticlesMap;
+    /// Input collection to map measured hits to simulated hits.
+    std::string inputMeasurementSimHitsMap;
     /// Output filename.
     std::string filePath = "tracksummary.root";
     /// Name of the output tree.
@@ -128,6 +132,17 @@ class RootTrajectorySummaryWriter final
       m_t_d0;  ///< The extrapolated truth transverse impact parameter
   std::vector<float>
       m_t_z0;  ///< The extrapolated truth longitudinal impact parameter
+
+  std::vector<std::vector<double>> m_t_index;///< hit index
+  std::vector<std::vector<double>> m_t_volumeId;
+  std::vector<std::vector<double>> m_t_boundaryId;
+  std::vector<std::vector<double>> m_t_layerId;
+  std::vector<std::vector<double>> m_t_approachId;
+  std::vector<std::vector<double>> m_t_sensitiveId;
+  std::vector<std::vector<double>> m_t_x;  ///< Global truth hit position x
+  std::vector<std::vector<double>> m_t_y;  ///< Global truth hit position y
+  std::vector<std::vector<double>> m_t_z;  ///< Global truth hit position z
+  std::vector<std::vector<double>> m_t_r;  ///< Global truth hit position r
 
   std::vector<bool> m_hasFittedParams;  ///< If the track has fitted parameter
   // The fitted parameters

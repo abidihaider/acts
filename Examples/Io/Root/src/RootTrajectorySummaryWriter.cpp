@@ -51,6 +51,17 @@ ActsExamples::RootTrajectorySummaryWriter::RootTrajectorySummaryWriter(
   if (m_cfg.treeName.empty()) {
     throw std::invalid_argument("Missing tree name");
   }
+  ACTS_ERROR("RootTrajectorySummaryWriter inputSimHits = " << m_cfg.inputSimHits);
+  ACTS_ERROR("RootTrajectorySummaryWriter inputMeasurementSimHitsMap = " << m_cfg.inputMeasurementSimHitsMap);
+  ACTS_ERROR("RootTrajectorySummaryWriter inputSimHits = " << config.inputSimHits);
+  ACTS_ERROR("RootTrajectorySummaryWriter inputMeasurementSimHitsMap = " << config.inputMeasurementSimHitsMap);
+  if (m_cfg.inputSimHits.empty()) {
+    throw std::invalid_argument("Missing simulated hits input collection");
+  }
+  if (m_cfg.inputMeasurementSimHitsMap.empty()) {
+    throw std::invalid_argument(
+        "Missing hit-simulated-hits map input collection");
+  }
 
   // Setup ROOT I/O
   auto path = m_cfg.filePath;
@@ -101,30 +112,40 @@ ActsExamples::RootTrajectorySummaryWriter::RootTrajectorySummaryWriter(
     m_outputTree->Branch("t_z0", &m_t_z0);
 
     m_outputTree->Branch("hasFittedParams", &m_hasFittedParams);
+    m_outputTree->Branch("t_index", &m_t_index);
+    m_outputTree->Branch("t_volumeId", &m_t_volumeId);
+    m_outputTree->Branch("t_boundaryId", &m_t_boundaryId);
+    m_outputTree->Branch("t_layerId", &m_t_layerId);
+    m_outputTree->Branch("t_approachId", &m_t_approachId);
+    m_outputTree->Branch("t_sensitiveId", &m_t_sensitiveId);
+    m_outputTree->Branch("t_x", &m_t_x);
+    m_outputTree->Branch("t_y", &m_t_y);
+    m_outputTree->Branch("t_z", &m_t_z);
+    m_outputTree->Branch("t_r", &m_t_r);
     m_outputTree->Branch("eLOC0_fit", &m_eLOC0_fit);
     m_outputTree->Branch("eLOC1_fit", &m_eLOC1_fit);
     m_outputTree->Branch("ePHI_fit", &m_ePHI_fit);
     m_outputTree->Branch("eTHETA_fit", &m_eTHETA_fit);
     m_outputTree->Branch("eQOP_fit", &m_eQOP_fit);
     m_outputTree->Branch("eT_fit", &m_eT_fit);
-    m_outputTree->Branch("err_eLOC0_fit", &m_err_eLOC0_fit);
-    m_outputTree->Branch("err_eLOC1_fit", &m_err_eLOC1_fit);
-    m_outputTree->Branch("err_ePHI_fit", &m_err_ePHI_fit);
-    m_outputTree->Branch("err_eTHETA_fit", &m_err_eTHETA_fit);
-    m_outputTree->Branch("err_eQOP_fit", &m_err_eQOP_fit);
-    m_outputTree->Branch("err_eT_fit", &m_err_eT_fit);
-    m_outputTree->Branch("res_eLOC0_fit", &m_res_eLOC0_fit);
-    m_outputTree->Branch("res_eLOC1_fit", &m_res_eLOC1_fit);
-    m_outputTree->Branch("res_ePHI_fit", &m_res_ePHI_fit);
-    m_outputTree->Branch("res_eTHETA_fit", &m_res_eTHETA_fit);
-    m_outputTree->Branch("res_eQOP_fit", &m_res_eQOP_fit);
-    m_outputTree->Branch("res_eT_fit", &m_res_eT_fit);
-    m_outputTree->Branch("pull_eLOC0_fit", &m_pull_eLOC0_fit);
-    m_outputTree->Branch("pull_eLOC1_fit", &m_pull_eLOC1_fit);
-    m_outputTree->Branch("pull_ePHI_fit", &m_pull_ePHI_fit);
-    m_outputTree->Branch("pull_eTHETA_fit", &m_pull_eTHETA_fit);
-    m_outputTree->Branch("pull_eQOP_fit", &m_pull_eQOP_fit);
-    m_outputTree->Branch("pull_eT_fit", &m_pull_eT_fit);
+    // m_outputTree->Branch("err_eLOC0_fit", &m_err_eLOC0_fit);
+    // m_outputTree->Branch("err_eLOC1_fit", &m_err_eLOC1_fit);
+    // m_outputTree->Branch("err_ePHI_fit", &m_err_ePHI_fit);
+    // m_outputTree->Branch("err_eTHETA_fit", &m_err_eTHETA_fit);
+    // m_outputTree->Branch("err_eQOP_fit", &m_err_eQOP_fit);
+    // m_outputTree->Branch("err_eT_fit", &m_err_eT_fit);
+    // m_outputTree->Branch("res_eLOC0_fit", &m_res_eLOC0_fit);
+    // m_outputTree->Branch("res_eLOC1_fit", &m_res_eLOC1_fit);
+    // m_outputTree->Branch("res_ePHI_fit", &m_res_ePHI_fit);
+    // m_outputTree->Branch("res_eTHETA_fit", &m_res_eTHETA_fit);
+    // m_outputTree->Branch("res_eQOP_fit", &m_res_eQOP_fit);
+    // m_outputTree->Branch("res_eT_fit", &m_res_eT_fit);
+    // m_outputTree->Branch("pull_eLOC0_fit", &m_pull_eLOC0_fit);
+    // m_outputTree->Branch("pull_eLOC1_fit", &m_pull_eLOC1_fit);
+    // m_outputTree->Branch("pull_ePHI_fit", &m_pull_ePHI_fit);
+    // m_outputTree->Branch("pull_eTHETA_fit", &m_pull_eTHETA_fit);
+    // m_outputTree->Branch("pull_eQOP_fit", &m_pull_eQOP_fit);
+    // m_outputTree->Branch("pull_eT_fit", &m_pull_eT_fit);
   }
 }
 
@@ -147,6 +168,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::endRun() {
 ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
     const AlgorithmContext& ctx, const TrajectoriesContainer& trajectories) {
   using HitParticlesMap = IndexMultimap<ActsFatras::Barcode>;
+  using HitSimHitsMap = IndexMultimap<Index>;
 
   if (m_outputFile == nullptr) {
     return ProcessCode::SUCCESS;
@@ -157,6 +179,9 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
       ctx.eventStore.get<SimParticleContainer>(m_cfg.inputParticles);
   const auto& hitParticlesMap =
       ctx.eventStore.get<HitParticlesMap>(m_cfg.inputMeasurementParticlesMap);
+  const auto& hitSimHitsMap =
+      ctx.eventStore.get<HitSimHitsMap>(m_cfg.inputMeasurementSimHitsMap);
+  const auto& simHits = ctx.eventStore.get<SimHitContainer>(m_cfg.inputSimHits);
 
   // For each particle within a track, how many hits did it contribute
   std::vector<ParticleHitCount> particleHitCounts;
@@ -379,6 +404,83 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
       m_pull_eT_fit.push_back(pull[Acts::eBoundTime]);
 
       m_hasFittedParams.push_back(hasFittedParams);
+
+
+      std::vector<double> l_t_index;///< hit index
+      std::vector<double> l_t_volumeId;
+      std::vector<double> l_t_boundaryId;
+      std::vector<double> l_t_layerId;
+      std::vector<double> l_t_approachId;
+      std::vector<double> l_t_sensitiveId;
+      std::vector<double> l_t_x;  ///< Global truth hit position x
+      std::vector<double> l_t_y;  ///< Global truth hit position y
+      std::vector<double> l_t_z;  ///< Global truth hit position z
+      std::vector<double> l_t_r;  ///< Global truth hit position r
+
+      // Get the trackStates on the trajectory
+      mj.visitBackwards(trackTip, [&](const auto& state) {
+        // we only fill the track states with non-outlier measurement
+        auto typeFlags = state.typeFlags();
+        if (not typeFlags.test(Acts::TrackStateFlag::MeasurementFlag)) {
+          return true;
+        }
+
+        const auto& surface = state.referenceSurface();
+
+        // get the truth hits corresponding to this trackState
+        // Use average truth in the case of multiple contributing sim hits
+        const auto& sl =static_cast<const IndexSourceLink&>(state.uncalibrated());
+        const auto hitIdx = sl.index();
+        auto indices = makeRange(hitSimHitsMap.equal_range(hitIdx));
+        auto [truthLocal, truthPos4, truthUnitDir] =averageSimHits(ctx.geoContext, surface, simHits, indices);
+        // momemtum averaging makes even less sense than averaging position and
+        // direction. use the first momentum or set q/p to zero
+        uint32_t index = -1;
+        uint32_t  volumeId = -1;
+        uint32_t  boundaryId = -1;
+        uint32_t  layerId = -1;
+        uint32_t  approachId = -1;
+        uint32_t  sensitiveId = -1;
+
+        if (not indices.empty()) {
+          // we assume that the indices are within valid ranges so we do not
+          // need to check their validity again.
+          const auto simHitIdx0 = indices.begin()->second;
+          const auto& simHit0 = *simHits.nth(simHitIdx0);
+          index = simHitIdx0;
+          volumeId      = simHit0.geometryId().volume();
+          boundaryId    = simHit0.geometryId().boundary();
+          layerId       = simHit0.geometryId().layer();
+          approachId    = simHit0.geometryId().approach();
+          sensitiveId   = simHit0.geometryId().sensitive();
+        }
+
+        // fill the truth hit info
+        l_t_index.push_back(index);
+        l_t_volumeId.push_back(volumeId);
+        l_t_boundaryId.push_back(boundaryId);
+        l_t_layerId.push_back(layerId);
+        l_t_approachId.push_back(approachId);
+        l_t_sensitiveId.push_back(sensitiveId);
+        l_t_x.push_back(truthPos4[Acts::ePos0]);
+        l_t_y.push_back(truthPos4[Acts::ePos1]);
+        l_t_z.push_back(truthPos4[Acts::ePos2]);
+        l_t_r.push_back(perp(truthPos4.template segment<3>(Acts::ePos0)));
+
+        return true;
+      });  // all states
+
+      m_t_index.push_back(l_t_index);
+      m_t_volumeId.push_back(l_t_volumeId);
+      m_t_boundaryId.push_back(l_t_boundaryId);
+      m_t_layerId.push_back(l_t_layerId);
+      m_t_approachId.push_back(l_t_approachId);
+      m_t_sensitiveId.push_back(l_t_sensitiveId);
+      m_t_x.push_back(l_t_x);
+      m_t_y.push_back(l_t_y);
+      m_t_z.push_back(l_t_z);
+      m_t_r.push_back(l_t_r);
+
     }  // all subtrajectories
   }    // all trajectories
 
@@ -418,6 +520,16 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
   m_t_eta.clear();
   m_t_d0.clear();
   m_t_z0.clear();
+  m_t_index.clear();///< hit index
+  m_t_volumeId.clear();
+  m_t_boundaryId.clear();
+  m_t_layerId.clear();
+  m_t_approachId.clear();
+  m_t_sensitiveId.clear();
+  m_t_x.clear();  ///< Global truth hit position x
+  m_t_y.clear();  ///< Global truth hit position y
+  m_t_z.clear();  ///< Global truth hit position z
+  m_t_r.clear();  ///< Global truth hit position r
 
   m_hasFittedParams.clear();
   m_eLOC0_fit.clear();

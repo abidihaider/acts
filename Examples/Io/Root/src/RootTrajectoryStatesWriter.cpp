@@ -76,6 +76,12 @@ ActsExamples::RootTrajectoryStatesWriter::RootTrajectoryStatesWriter(
     m_outputTree->Branch("multiTraj_nr", &m_multiTrajNr);
     m_outputTree->Branch("subTraj_nr", &m_subTrajNr);
 
+    m_outputTree->Branch("t_index", &m_t_index);
+    m_outputTree->Branch("t_volumeId",      &m_t_volumeId);
+    m_outputTree->Branch("t_boundaryId",    &m_t_boundaryId);
+    m_outputTree->Branch("t_layerId",       &m_t_layerId);
+    m_outputTree->Branch("t_approachId",    &m_t_approachId);
+    m_outputTree->Branch("t_sensitiveId",   &m_t_sensitiveId);
     m_outputTree->Branch("t_x", &m_t_x);
     m_outputTree->Branch("t_y", &m_t_y);
     m_outputTree->Branch("t_z", &m_t_z);
@@ -332,6 +338,13 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectoryStatesWriter::writeT(
         // momemtum averaging makes even less sense than averaging position and
         // direction. use the first momentum or set q/p to zero
         float truthQOP = 0.0f;
+        uint32_t index = -1;
+        uint32_t  volumeId = -1;
+        uint32_t  boundaryId = -1;
+        uint32_t  layerId = -1;
+        uint32_t  approachId = -1;
+        uint32_t  sensitiveId = -1;
+
         if (not indices.empty()) {
           // we assume that the indices are within valid ranges so we do not
           // need to check their validity again.
@@ -340,9 +353,21 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectoryStatesWriter::writeT(
           const auto p =
               simHit0.momentum4Before().template segment<3>(Acts::eMom0).norm();
           truthQOP = truthQ / p;
+          index = simHitIdx0;
+          volumeId      = simHit0.geometryId().volume();
+          boundaryId    = simHit0.geometryId().boundary();
+          layerId       = simHit0.geometryId().layer();
+          approachId    = simHit0.geometryId().approach();
+          sensitiveId   = simHit0.geometryId().sensitive();
         }
 
         // fill the truth hit info
+        m_t_index.push_back(index);
+        m_t_volumeId.push_back(volumeId);
+        m_t_boundaryId.push_back(boundaryId);
+        m_t_layerId.push_back(layerId);
+        m_t_approachId.push_back(approachId);
+        m_t_sensitiveId.push_back(sensitiveId);
         m_t_x.push_back(truthPos4[Acts::ePos0]);
         m_t_y.push_back(truthPos4[Acts::ePos1]);
         m_t_z.push_back(truthPos4[Acts::ePos2]);
@@ -583,6 +608,12 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectoryStatesWriter::writeT(
       m_outputTree->Fill();
 
       // now reset
+      m_t_index.clear();
+      m_t_volumeId.clear();
+      m_t_boundaryId.clear();
+      m_t_layerId.clear();
+      m_t_approachId.clear();
+      m_t_sensitiveId.clear();
       m_t_x.clear();
       m_t_y.clear();
       m_t_z.clear();

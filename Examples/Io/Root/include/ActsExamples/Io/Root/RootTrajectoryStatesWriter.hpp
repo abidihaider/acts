@@ -86,6 +86,13 @@ class RootTrajectoryStatesWriter final : public WriterT<TrajectoriesContainer> {
   uint32_t m_multiTrajNr{0};     ///< the multi-trajectory number
   unsigned int m_subTrajNr{0};   ///< the multi-trajectory sub-trajectory number
 
+
+  std::vector<uint32_t> m_t_index;///< hit index
+  std::vector<uint32_t> m_t_volumeId;
+  std::vector<uint32_t> m_t_boundaryId;
+  std::vector<uint32_t> m_t_layerId;
+  std::vector<uint32_t> m_t_approachId;
+  std::vector<uint32_t> m_t_sensitiveId;
   std::vector<float> m_t_x;  ///< Global truth hit position x
   std::vector<float> m_t_y;  ///< Global truth hit position y
   std::vector<float> m_t_z;  ///< Global truth hit position z

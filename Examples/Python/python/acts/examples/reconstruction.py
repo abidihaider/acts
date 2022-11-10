@@ -791,6 +791,8 @@ def addCKFTracks(
                 # since the unselected CKF track might have a majority particle not in the
                 # filtered particle collection. This could be avoided when a seperate track
                 # selection algorithm is used.
+                inputSimHits="simhits",
+                inputMeasurementSimHitsMap="measurement_simhits_map",
                 inputParticles="particles_selected",
                 inputMeasurementParticlesMap="measurement_particles_map",
                 filePath=str(outputDirRoot / "tracksummary_ckf.root"),

@@ -116,6 +116,8 @@ def runTruthTrackingGsf(
     s.addWriter(
         acts.examples.RootTrajectorySummaryWriter(
             level=acts.logging.INFO,
+            inputSimHits="simhits",
+            inputMeasurementSimHitsMap="measurement_simhits_map",
             inputTrajectories="gsf_trajectories",
             inputParticles="truth_seeds_selected",
             inputMeasurementParticlesMap="measurement_particles_map",
