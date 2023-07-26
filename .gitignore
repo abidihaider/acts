@@ -33,6 +33,8 @@ build*
 *.pyc
 /cmake_cmd
 /cleanup.sh
+samples*
+acts-itk/
 
 # dont ignore hidden configs
 !.clang-format

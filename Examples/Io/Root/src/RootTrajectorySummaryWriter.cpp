@@ -51,10 +51,6 @@ ActsExamples::RootTrajectorySummaryWriter::RootTrajectorySummaryWriter(
   if (m_cfg.treeName.empty()) {
     throw std::invalid_argument("Missing tree name");
   }
-  ACTS_ERROR("RootTrajectorySummaryWriter inputSimHits = " << m_cfg.inputSimHits);
-  ACTS_ERROR("RootTrajectorySummaryWriter inputMeasurementSimHitsMap = " << m_cfg.inputMeasurementSimHitsMap);
-  ACTS_ERROR("RootTrajectorySummaryWriter inputSimHits = " << config.inputSimHits);
-  ACTS_ERROR("RootTrajectorySummaryWriter inputMeasurementSimHitsMap = " << config.inputMeasurementSimHitsMap);
   if (m_cfg.inputSimHits.empty()) {
     throw std::invalid_argument("Missing simulated hits input collection");
   }
@@ -95,6 +91,7 @@ ActsExamples::RootTrajectorySummaryWriter::RootTrajectorySummaryWriter(
 
     m_outputTree->Branch("nMajorityHits", &m_nMajorityHits);
     m_outputTree->Branch("majorityParticleId", &m_majorityParticleId);
+    m_outputTree->Branch("t_pdgID", &m_t_pdgID);
     m_outputTree->Branch("t_charge", &m_t_charge);
     m_outputTree->Branch("t_time", &m_t_time);
     m_outputTree->Branch("t_vx", &m_t_vx);
@@ -256,6 +253,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
       float t_pT = NaNfloat;
       float t_d0 = NaNfloat;
       float t_z0 = NaNfloat;
+      int t_pdgID = NaNint;
 
       // Get the perigee surface
       Acts::Surface* pSurface = nullptr;
@@ -296,6 +294,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
           t_phi = phi(particle.unitDirection());
           t_eta = eta(particle.unitDirection());
           t_pT = t_p * perp(particle.unitDirection());
+          t_pdgID = particle.pdg();
 
           if (pSurface != nullptr) {
             // get the truth perigee parameter
@@ -338,6 +337,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
       m_t_pT.push_back(t_pT);
       m_t_d0.push_back(t_d0);
       m_t_z0.push_back(t_z0);
+      m_t_pdgID.push_back(t_pdgID);
 
       // Initialize the fitted track parameters info
       std::array<float, Acts::eBoundSize> param = {
@@ -505,6 +505,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
 
   m_nMajorityHits.clear();
   m_majorityParticleId.clear();
+  m_t_pdgID.clear();
   m_t_charge.clear();
   m_t_time.clear();
   m_t_vx.clear();

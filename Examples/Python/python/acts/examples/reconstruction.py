@@ -766,22 +766,22 @@ def addCKFTracks(
             outputDirRoot.mkdir()
 
         if writeTrajectories:
-            # write track states from CKF
-            trackStatesWriter = acts.examples.RootTrajectoryStatesWriter(
-                level=customLogLevel(),
-                inputTrajectories=trackFinder.config.outputTrajectories,
-                # @note The full particles collection is used here to avoid lots of warnings
-                # since the unselected CKF track might have a majority particle not in the
-                # filtered particle collection. This could be avoided when a seperate track
-                # selection algorithm is used.
-                inputParticles="particles_selected",
-                inputSimHits="simhits",
-                inputMeasurementParticlesMap="measurement_particles_map",
-                inputMeasurementSimHitsMap="measurement_simhits_map",
-                filePath=str(outputDirRoot / "trackstates_ckf.root"),
-                treeName="trackstates",
-            )
-            s.addWriter(trackStatesWriter)
+            # # write track states from CKF
+            # trackStatesWriter = acts.examples.RootTrajectoryStatesWriter(
+            #     level=customLogLevel(),
+            #     inputTrajectories=trackFinder.config.outputTrajectories,
+            #     # @note The full particles collection is used here to avoid lots of warnings
+            #     # since the unselected CKF track might have a majority particle not in the
+            #     # filtered particle collection. This could be avoided when a seperate track
+            #     # selection algorithm is used.
+            #     inputParticles="particles_selected",
+            #     inputSimHits="simhits",
+            #     inputMeasurementParticlesMap="measurement_particles_map",
+            #     inputMeasurementSimHitsMap="measurement_simhits_map",
+            #     filePath=str(outputDirRoot / "trackstates_ckf.root"),
+            #     treeName="trackstates",
+            # )
+            # s.addWriter(trackStatesWriter)
 
             # write track summary from CKF
             trackSummaryWriter = acts.examples.RootTrajectorySummaryWriter(

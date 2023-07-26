@@ -65,6 +65,13 @@ def addParticleGun(
     printParticles: bool = False,
     rnd: Optional[RandomNumbers] = None,
     logLevel: Optional[acts.logging.Level] = None,
+    npileup: int = 0,
+    beam: Optional[
+        Union[acts.PdgParticle, Iterable]
+    ] = None,  # default: acts.PdgParticle.eProton
+    pileupProcess: Iterable = ["SoftQCD:all = on"],
+    cmsEnergy: Optional[float] = None,  # default: 14 * acts.UnitConstants.TeV
+
 ) -> None:
     """This function steers the particle generation using the particle gun
 
@@ -98,12 +105,13 @@ def addParticleGun(
 
     # Preliminaries
     rnd = rnd or RandomNumbers(seed=228)
-
+    if not isinstance(beam, Iterable):
+        beam = (beam, beam)
     # Input
-    evGen = EventGenerator(
-        level=customLogLevel(),
-        generators=[
-            EventGenerator.Generator(
+
+    generators = []
+    ## Single particle information
+    generators.append( EventGenerator.Generator(
                 multiplicity=FixedMultiplicityGenerator(n=multiplicity),
                 vertex=vtxGen
                 or acts.examples.GaussianVertexGenerator(
@@ -122,7 +130,28 @@ def addParticleGun(
                     )
                 ),
             )
-        ],
+        )
+    if npileup > 0:
+        generators.append(
+            acts.examples.EventGenerator.Generator(
+                multiplicity=acts.examples.FixedMultiplicityGenerator(n=npileup),
+                vertex=vtxGen,
+                particles=acts.examples.pythia8.Pythia8Generator(
+                    level=customLogLevel(),
+                    **acts.examples.defaultKWArgs(
+                        pdgBeam0=beam[0],
+                        pdgBeam1=beam[1],
+                        cmsEnergy=cmsEnergy,
+                        settings=pileupProcess,
+                    ),
+                ),
+            )
+        )
+
+
+    evGen = EventGenerator(
+        level=customLogLevel(),
+        generators=generators,
         outputParticles="particles_input",
         randomNumbers=rnd,
     )

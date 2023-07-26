@@ -115,6 +115,8 @@ class RootTrajectorySummaryWriter final
       m_nMajorityHits;  ///< The number of hits from majority particle
   std::vector<uint64_t>
       m_majorityParticleId;      ///< The particle Id of the majority particle
+  std::vector<int>
+      m_t_pdgID;      ///< The pdg ID of the majority particle
   std::vector<int> m_t_charge;   ///< Charge of majority particle
   std::vector<float> m_t_time;   ///< Time of majority particle
   std::vector<float> m_t_vx;     ///< Vertex x positions of majority particle

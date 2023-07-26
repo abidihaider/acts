@@ -183,6 +183,8 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
     nSpacePoints += ctx.eventStore.get<SimSpacePointContainer>(isp).size();
   }
 
+  //std::cout<<"I am herekajshfkljadshfkdsjf"<<std::endl;
+
   std::vector<const SimSpacePoint*> spacePointPtrs;
   spacePointPtrs.reserve(nSpacePoints);
   for (const auto& isp : m_cfg.inputSpacePoints) {
@@ -244,12 +246,17 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
   size_t nSeeds = seeds.size();
   static thread_local ProtoTrackContainer protoTracks;
   protoTracks.clear();
+  //std::cout<<"nSeeds: "<<nSeeds<<std::endl;
 
   protoTracks.reserve(nSeeds);
+  int iIndex = 0;
   for (const auto& seed : seeds) {
     ProtoTrack& protoTrack = protoTracks.emplace_back();
     protoTrack.reserve(seed.sp().size());
+    //std::cout<<"Seed: "<<iIndex<<std::endl;
+    iIndex++;
     for (auto spacePointPtr : seed.sp()) {
+        //std::cout<<"x: "<<spacePointPtr->x()<<"y: "<<spacePointPtr->y()<<"z: "<<spacePointPtr->z()<<std::endl;
       for (const auto slink : spacePointPtr->sourceLinks()) {
         const auto islink = static_cast<const IndexSourceLink&>(*slink);
         protoTrack.emplace_back(islink.index());
