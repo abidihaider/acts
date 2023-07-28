@@ -80,10 +80,11 @@ ActsExamples::ProcessCode ActsExamples::CKFPerformanceWriter::endRun() {
   float duplicationRate_particle =
       float(m_nTotalDuplicateParticles) / m_nTotalParticles;
 
-  ACTS_DEBUG("nTotalTracks                = " << m_nTotalTracks);
-  ACTS_DEBUG("nTotalMatchedTracks         = " << m_nTotalMatchedTracks);
-  ACTS_DEBUG("nTotalDuplicateTracks       = " << m_nTotalDuplicateTracks);
-  ACTS_DEBUG("nTotalFakeTracks            = " << m_nTotalFakeTracks);
+  ACTS_INFO("nTotalTracks                = " << m_nTotalTracks);
+  ACTS_INFO("nTotalMatchedTracks         = " << m_nTotalMatchedTracks);
+  ACTS_INFO("nTotalDuplicateTracks       = " << m_nTotalDuplicateTracks);
+  ACTS_INFO("nTotalFakeTracks            = " << m_nTotalFakeTracks);
+  ACTS_INFO("nTotalParticles             = " << m_nTotalParticles);
 
   ACTS_INFO(
       "Efficiency with tracks (nMatchedTracks/ nAllTracks) = " << eff_tracks);
