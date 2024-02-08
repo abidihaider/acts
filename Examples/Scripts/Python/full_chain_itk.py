@@ -141,31 +141,31 @@ addDigitization(
 #    outputDirRoot=outputDir,
 #)
 
-addSeeding(
-    s,
-    trackingGeometry,
-    field,
-    *acts.examples.itk.itkSeedingAlgConfig("PixelSpacePoints"),
-    geoSelectionConfigFile=geo_dir / "itk-hgtd/geoSelection-ITk.json",
-    outputDirRoot=outputDir,
-)
+# addSeeding(
+#     s,
+#     trackingGeometry,
+#     field,
+#     *acts.examples.itk.itkSeedingAlgConfig("PixelSpacePoints"),
+#     geoSelectionConfigFile=geo_dir / "itk-hgtd/geoSelection-ITk.json",
+#     outputDirRoot=outputDir,
+# )
 
-addCKFTracks(
-    s,
-    trackingGeometry,
-    field,
-    CKFPerformanceConfig(ptMin=1.0 * u.GeV if (args.dottbar or args.mu > 0) else 0.0, nMeasurementsMin=6),
-    TrackSelectorRanges(pt=(1.0 * u.GeV, None), absEta=(None, 4.0), removeNeutral=True),
-    outputDirRoot=outputDir,
-    writeTrajectories=True,
-)
+# addCKFTracks(
+#     s,
+#     trackingGeometry,
+#     field,
+#     CKFPerformanceConfig(ptMin=1.0 * u.GeV if (args.dottbar or args.mu > 0) else 0.0, nMeasurementsMin=6),
+#     TrackSelectorRanges(pt=(1.0 * u.GeV, None), absEta=(None, 4.0), removeNeutral=True),
+#     outputDirRoot=outputDir,
+#     writeTrajectories=True,
+# )
 
-addAmbiguityResolution(
-    s,
-    AmbiguityResolutionConfig(maximumSharedHits=3),
-    CKFPerformanceConfig(ptMin=1.0 * u.GeV if (args.dottbar or args.mu > 0) else 0.0, nMeasurementsMin=6),
-    outputDirRoot=outputDir,
-)
+# addAmbiguityResolution(
+#     s,
+#     AmbiguityResolutionConfig(maximumSharedHits=3),
+#     CKFPerformanceConfig(ptMin=1.0 * u.GeV if (args.dottbar or args.mu > 0) else 0.0, nMeasurementsMin=6),
+#     outputDirRoot=outputDir,
+# )
 
 # addVertexFitting(
 #     s,
